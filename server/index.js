@@ -3,41 +3,104 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const app = express();
 
-// const database = require('./eventDatabase.js')
+const database = require('./eventDatabase.js')
+database.connect(app)
 const EventModel = require("./schema/Event.js")
 
+
+// console.log(database)
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// The "Hello World" Route
-app.get('/eventDB', (req, res) => {
-  res.json({ message: "Hello from the MERN Server!" });
-});
 
 
 app.get('/eventDB', (req, res) => {
-    EventModel.find({
-        //put in here whatever you want the front end to send
-    })
-    .then(doc => {
-        res.send(doc)
-        console.log(doc)
-    })
+    console.log("doing a get")
+
+    
+
+        const athleteGet = req.query.athleteName;
+
+        if (athleteGet) {
+        EventModel.find({ athleteName: athleteGet })
+            .then(doc => {
+                console.log(doc);
+                res.json(doc); 
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ error: "Failed to fetch athelete" });
+            });
+    } else {
+        EventModel.find({})
+            .then(doc => {
+                res.json(doc);
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ error: "Failed to fetch athlete" });
+            });
+    }
 });
 
 
 
+app.post('/eventDB', (req, res) => {
+    try{
+    console.log("posting new event")
+
+    let addEvent2 = new EventModel({
+
+        athleteName: "Ashwin Prabhu",
+        athleteRecord: "2:06", 
+        eventType: "800m",
+        date: new Date("2026-05-31")
+
+        })
+
+        addEvent2.save()
+
+        .then(doc => {
+            console.log("user " +doc.name+ " added to the database")
+            console.log(doc)
+            })
+        .then(res.send("user saved to DB"))
+    }
+            catch (error) {
+            console.error(error)
+            }
+
+        
+    })
 
 
-// Database Connection
-const PORT = process.env.PORT || 5000;
+app.delete('/eventDB', async (req, res) => {
+    try {console.log('deleting something from db')
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB Connected");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch(err => console.log("DB Connection Error:", err));
+        const deletedEvent = await EventModel.findOneAndDelete({
+            eventType: "shotput"
+        });
+
+        if (!deletedEvent) {
+            return res.status(404).json({ message: "No event to delete." });
+        }
+
+        res.status(200).json({
+            message: "Object(s) deleted",
+            data: deletedEvent,
+           
+        })
+        
+    }
+        catch (error) {
+            console.error(error)
+        }
+
+   
+})
+
+

@@ -4,17 +4,17 @@ const Schema = mongoose.Schema
 
 const eventSchema = new Schema({
 
-    eventName: String,
+    athleteName: String,
 
-    description: {
+    athleteRecord: {
         type: String,
-        required: false
+        required: true
     },
 
     eventType: { 
     type: String,
-    enum: ["party","social", "infosession", "meeting", "misc."],
-    default: "misc.",
+    enum: ["shotput", "discus", "100m", "200m", "lj", "800m"],
+    
     required: true
     },
     

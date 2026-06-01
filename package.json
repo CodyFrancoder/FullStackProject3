@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "Project 4 FSWD",
   "main": "index.js",
-  
   "scripts": {
- "server": "cd server && node index.js",
- "client": "cd client && npm run dev",
- "dev": "concurrently \"npm run server\" \"npm run client\""
-},
-
+    "server": "cd server && node index.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CodyFrancoder/FullStackProject3.git"
@@ -24,5 +22,8 @@
   "homepage": "https://github.com/CodyFrancoder/FullStackProject3#readme",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "axios": "^1.16.1"
   }
 }
