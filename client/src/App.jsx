@@ -8,9 +8,18 @@ import './App.css'
 
 function App() {
 
+
+//SEARCH RESULT FEATURE + DATA
 const [event, setEvent] = useState([])
-const [eventTime, setEventTime] = useState([])
 const [nameSearchQuery, setNameSearchQuery] = useState("")
+
+//NEW PROFILE DATA NEEDED
+const[athleteName, setAthleteName] = useState("")
+const [athleteRecord, setAthleteRecord] = useState("")
+const[eventType, setEventType] = useState("")
+const[date, setDate] = useState("")
+
+
 
  useEffect(() => {
     const fetchData = async () => {
@@ -46,10 +55,9 @@ const [nameSearchQuery, setNameSearchQuery] = useState("")
           console.log("running fetch athlete")
           
           try {
-            const response = await axios.get('http://localhost:5000/eventDB', {
-            params: {athleteName: athleteGet, eventRecord: athleteGet} 
-        
-            });
+            const response = await axios.get('http://localhost:5000/eventDB', 
+            {params: {athleteName: athleteGet, eventRecord: athleteGet}});
+
             console.log("Search result: " + response.data);
             setEvent(response.data);
 
@@ -66,11 +74,29 @@ const [nameSearchQuery, setNameSearchQuery] = useState("")
   //ADD EVENT FUNC
   function handlePost(e){
     e.preventDefault()
-  //   console.log("Posting new user")
+    console.log("Posting new user")
 
-  //   let 
-    
-  //   axios.post('/eventDB', postEvent)
+    const newProfile = {
+      athleteName,
+      athleteRecord,
+      eventType,
+      date
+    };
+
+    // try{
+    //   const response = await axios.post('http://localhost:5000/eventDB', newProfile);
+    //   console.log(response.data);
+    //   alert("New Profile Saved")
+
+    //   setAthleteName("");
+    //   setAthleteRecord("");
+    //   setEventType("");
+    //   setDate("");
+
+    // } catch (error){
+    //   console.error("Could not save event" + error)
+    // }
+
 
   }
   
@@ -104,16 +130,86 @@ const [nameSearchQuery, setNameSearchQuery] = useState("")
 
 
       <>
-        <p>
-          Example Profile: {event.length > 0 ? event[0].eventName || event[0].eventType : "No events found"}
-        </p>
+        <h3>Results</h3>
+        {Array.isArray(event) && event.length > 0 ? 
+          (event.map((ev, index) => (
+            <p key={index}> 
+            <strong>{ev.athleteName}</strong>:
+            <p/>
+            <p>Event: {ev.eventType}</p>
+            <p/>
+            <p>Record: {ev.athleteRecord}</p>
+            <p/>
+            <p>Date Set: {ev.date}</p>
+            </p>
+
+            )
+          )
+        ) : (
+          <p>Athlete Not Found</p>
+        )}
 
       </>
+
+      
+      <hr/>
+      <hr/>
+
+
 
       <>
         <h2>New Profile</h2>
         <form method='post' onSubmit={handlePost}>
-          <button>
+
+          <label>
+            <input
+            type = "text" 
+            value = {athleteName}
+            placeholder = "Athlete Name"
+            onChange={(e) => setAthleteName(e.target.value)} 
+            />
+          </label>
+          
+           <p></p>
+
+          <label>
+            <input
+            type = "text" 
+            value = {eventType}
+            placeholder = "Event"
+            onChange={(e) => setEventType(e.target.value)}
+            />
+          </label>
+
+          <p></p>
+
+
+          <label>
+            <input
+            type = "text" 
+            value = {athleteRecord}
+            placeholder = "Record"
+            onChange={(e) => setAthleteRecord(e.target.value)}
+            />
+          </label>
+
+           <p></p>
+          
+
+          <label>
+            <input
+            type = "text" 
+            value = {date}
+            placeholder = "Date Set"
+            onChange={(e) => setDate(e.target.value)}
+            />
+          </label>
+
+
+
+         <p></p>
+
+          <button type='submit'>
             Submit Profile
           </button>
         </form>
