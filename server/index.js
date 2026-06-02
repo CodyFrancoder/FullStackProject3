@@ -78,20 +78,53 @@ app.post('/profileDB', (req, res) => {
         console.error(error)
         res.status(500).json({message: "server error"})
     }
+  
+    })
 
 
-   
+
+
+
+ app.put('/profileDB/:id', async (req, res) => {
+
+    try{
+        const { id } = req.params;
+        const {athleteName, athleteRecord, eventType, date} = req.body
+
+        console.log(`Updating prifle woth ID: ${id} `, req.body)
+
+        const updatedProfile = await ProfileModel.findByIdAndUpdate(
+            id,
+            {athleteName, athleteRecord, eventType, date},
+            {new: true, runValidators: true}
+        );
+        if(!updatedProfile){
+            return res.status(404).json({message: "Profile not found"})
+        }
+        res.status(200).json({
+            message: "Profile updated",
+            data: updatedProfile
+        })
+    } catch (error){
+        console.error("server profile update failed", error)
+        res.status(500).json({message: "Server error in put"})
+    }
+
         
     })
 
 
 
-app.delete('/profileDB', async (req, res) => {
-    try {console.log('deleting something from db')
 
-        const deletedProfile = await ProfileModel.findOneAndDelete({
-            eventType: "shotput"
-        });
+
+app.delete('/profileDB/:id', async (req, res) => {
+    try {
+        
+        
+        const { id } = req.params;
+        console.log(`deleting object with ID: ${id} from db`)
+
+        const deletedProfile = await ProfileModel.findByIdAndDelete(id);
 
         if (!deletedProfile) {
             return res.status(404).json({ message: "No profile to delete." });
