@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const eventModel = require('./schema/Event')
+const profileModel = require('./schema/Profile')
 
 require('dotenv').config();
 
@@ -7,7 +7,7 @@ require('dotenv').config();
 
 
 const server = '127.0.0.1:27017';
-const database = 'eventDB';  	
+const database = 'profileDB';  	
 
 const PORT = process.env.PORT || 5000;
 

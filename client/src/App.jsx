@@ -9,8 +9,8 @@ import './App.css'
 function App() {
 
 
-//SEARCH RESULT FEATURE + DATA
-const [event, setEvent] = useState([])
+//SEARCH AND RESULT + DATA
+const [profile, setProfile] = useState([])
 const [nameSearchQuery, setNameSearchQuery] = useState("")
 
 //NEW PROFILE DATA NEEDED
@@ -24,9 +24,9 @@ const[date, setDate] = useState("")
  useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/eventDB');
+        const response = await axios.get('http://localhost:5000/profileDB');
         console.log("Initial data: " + response.data); 
-        setEvent("data one " + response.data)
+        setProfile("data one " + response.data)
         console.log("not the data one " +response)
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,17 +49,15 @@ const[date, setDate] = useState("")
 
     console.log("Submitting");
 
-    //  let athleteTest = "Nicholas Li"
-
         const fetchAthlete = async (athleteGet) => {
           console.log("running fetch athlete")
           
           try {
-            const response = await axios.get('http://localhost:5000/eventDB', 
+            const response = await axios.get('http://localhost:5000/profileDB', 
             {params: {athleteName: athleteGet, eventRecord: athleteGet}});
 
             console.log("Search result: " + response.data);
-            setEvent(response.data);
+            setProfile(response.data);
 
           } catch (error) {
               console.error(error)
@@ -71,8 +69,8 @@ const[date, setDate] = useState("")
   } 
 
 
-  //ADD EVENT FUNC
-  function handlePost(e){
+  //ADD PROFILE 
+  async function handlePost(e){
     e.preventDefault()
     console.log("Posting new user")
 
@@ -83,19 +81,20 @@ const[date, setDate] = useState("")
       date
     };
 
-    // try{
-    //   const response = await axios.post('http://localhost:5000/eventDB', newProfile);
-    //   console.log(response.data);
-    //   alert("New Profile Saved")
 
-    //   setAthleteName("");
-    //   setAthleteRecord("");
-    //   setEventType("");
-    //   setDate("");
+    try {
+      const response = await axios.post('http://localhost:5000/profileDB', newProfile);
+      console.log(response.data);
+      alert("New Profile Saved")
 
-    // } catch (error){
-    //   console.error("Could not save event" + error)
-    // }
+      setAthleteName("");
+      setAthleteRecord("");
+      setEventType("");
+      setDate("");
+
+    } catch (error){
+      console.error("Could not save profile" + error)
+    }
 
 
   }
@@ -108,14 +107,12 @@ const[date, setDate] = useState("")
   
       <h1>Track Tracker</h1>
 
-
-
       {/* INPUT SEARCH FUNCTION & GET FROM BACKEND */}
-      <>
+      <div>
         <form method="post" onSubmit={handleSearch}>
           <label>
             Profile Search: <input 
-              name = "eventSearch" 
+              name = "profileSearch" 
               value={nameSearchQuery} 
               onChange={(e) => setNameSearchQuery(e.target.value)} 
               placeholder='Search Athlete'>
@@ -126,39 +123,38 @@ const[date, setDate] = useState("")
             submit search: 
           </button>
         </form>
-      </>
+      </div>
+      
 
 
-      <>
+      <div>
         <h3>Results</h3>
-        {Array.isArray(event) && event.length > 0 ? 
-          (event.map((ev, index) => (
-            <p key={index}> 
+        {Array.isArray(profile) && profile.length > 0 ? 
+          (profile.map((ev, index) => (
+            <div key={index}> 
             <strong>{ev.athleteName}</strong>:
-            <p/>
+            <div/>
             <p>Event: {ev.eventType}</p>
-            <p/>
+            <div/>
             <p>Record: {ev.athleteRecord}</p>
-            <p/>
+            <div/>
             <p>Date Set: {ev.date}</p>
-            </p>
-
+            </div>
             )
           )
         ) : (
           <p>Athlete Not Found</p>
         )}
 
-      </>
+      </div>
 
       
-      <hr/>
-      <hr/>
+      
+  
 
-
-
-      <>
-        <h2>New Profile</h2>
+      <div>
+        
+        <h2>Add New Profile</h2>
         <form method='post' onSubmit={handlePost}>
 
           <label>
@@ -172,13 +168,28 @@ const[date, setDate] = useState("")
           
            <p></p>
 
-          <label>
-            <input
-            type = "text" 
-            value = {eventType}
-            placeholder = "Event"
-            onChange={(e) => setEventType(e.target.value)}
-            />
+          <label htmlFor="events" value = {eventType} placeholder = "Event" >
+            <select id = "events" name = "events" onChange={(e) => setEventType(e.target.value)}>
+              
+
+              <option value="">-- Select an Event --</option>
+              <option value ="shotput">shotput</option>
+              <option value = "discus">discus</option>
+              <option value = "long jump">long jump</option>
+              <option value = "triple jump">triple jump</option>
+              <option value = "100m">100m</option>
+              <option value = "200m">200m</option>
+              <option value = "400m">400m</option>
+              <option value = "800m">800m</option>
+              <option value = "1600m">1600m</option>
+              <option value = "3200m">3200m</option>
+          
+            
+              
+              
+              
+            </select>
+
           </label>
 
           <p></p>
@@ -198,7 +209,7 @@ const[date, setDate] = useState("")
 
           <label>
             <input
-            type = "text" 
+            type = "date" 
             value = {date}
             placeholder = "Date Set"
             onChange={(e) => setDate(e.target.value)}
@@ -213,7 +224,7 @@ const[date, setDate] = useState("")
             Submit Profile
           </button>
         </form>
-      </>
+      </div>
 
 
 
